@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English to Russian Letter Converter</title>
+</head>
+<body>
+<h1>English to Russian Letter Converter</h1>
+<button id="randomTextButton">Get New Random Text</button>
+<textarea id="textInput" placeholder="Enter your text here" rows="20" cols="80"></textarea>
+<div id="letterButtons"></div>
+<script>
+    const englishToRussian = {
+        'A': 'А', 'a': 'а', 'B': 'Б', 'b': 'б', 'C': 'С', 'c': 'с', 'D': 'Д', 'd': 'д', 'E': 'Е', 'e': 'е', 'F': 'Ф', 'f': 'ф',
+        'G': 'Г', 'g': 'г', 'H': 'Х', 'h': 'х', 'I': 'И', 'i': 'и', 'J': 'Й', 'j': 'й', 'K': 'К', 'k': 'к', 'L': 'Л', 'l': 'л',
+        'M': 'М', 'm': 'м', 'N': 'Н', 'n': 'н', 'O': 'О', 'o': 'о', 'P': 'П', 'p': 'п', 'Q': 'К', 'q': 'к', 'R': 'Р', 'r': 'р',
+        'S': 'С', 's': 'с', 'T': 'Т', 't': 'т', 'U': 'У', 'u': 'у', 'V': 'В', 'v': 'в', 'W': 'В', 'w': 'в', 'X': 'КС', 'x': 'кс',
+        'Y': 'Ы', 'y': 'ы', 'Z': 'З', 'z': 'з'
+    };
+
+    const buttonContainer = document.getElementById('letterButtons');
+
+    for (const letter in englishToRussian) {
+        if (letter === letter.toLowerCase()) { // Only process lowercase letters to avoid duplicate buttons
+            const upperLetter = letter.toUpperCase();
+            const button = document.createElement('button');
+            button.innerText = `${upperLetter}/${letter} -> ${englishToRussian[upperLetter]}/${englishToRussian[letter]}`;
+
+            // Add a toggle property to track the state of the button
+            button.toggle = false;
+
+            button.addEventListener('click', () => {
+                const input = document.getElementById('textInput');
+                const upperRegex = new RegExp(button.toggle ? englishToRussian[upperLetter] : upperLetter, 'g');
+                const lowerRegex = new RegExp(button.toggle ? englishToRussian[letter] : letter, 'g');
+                input.value = input.value.replace(upperRegex, button.toggle ? upperLetter : englishToRussian[upperLetter]);
+                input.value = input.value.replace(lowerRegex, button.toggle ? letter : englishToRussian[letter]);
+
+                // Toggle the button state after each click
+                button.toggle = !button.toggle;
+            });
+            buttonContainer.appendChild(button);
+        }
+    }
+
+    async function getRandomWikipediaText() {
+        const url = 'https://en.wikipedia.org/api/rest_v1/page/random/summary';
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const textarea = document.getElementById('textInput');
+            textarea.value = data.extract;
+        } catch (error) {
+            console.error('Error fetching random Wikipedia article:', error);
+        }
+    }
+
+    // Add an event listener to the "Get New Random Text" button
+    const randomTextButton = document.getElementById('randomTextButton');
+    randomTextButton.addEventListener('click', getRandomWikipediaText);
+    getRandomWikipediaText();
+</script>
+</body>
+</html>
