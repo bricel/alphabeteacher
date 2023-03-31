@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English to Russian Letter Converter</title>
+    <title>English to Russian/Hebrew Letter Converter</title>
     <!-- Add Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3HV5HzF6Gvk/e3s3SS+8x6Fp5y3lSk" crossorigin="anonymous">
 </head>
@@ -46,8 +46,11 @@
         </div>
         <div class="col-md-12 text-center">
             <button id="randomTextButton" class="btn btn-primary mb-3">Get New Random Text</button>
+            <div class="col-md-12 text-center">
+                <button id="toggleLanguageButton" class="btn btn-secondary mb-3">Toggle Language: Hebrew</button>
+            </div>
+            <div id="letterButtons" class="col-md-12 d-flex flex-wrap justify-content-center"></div>
         </div>
-        <div id="letterButtons" class="col-md-12 d-flex flex-wrap justify-content-center"></div>
     </div>
 </div>
 <!-- Add Bootstrap JavaScript -->
@@ -59,42 +62,71 @@
         'G': 'Г', 'g': 'г', 'H': 'Х', 'h': 'х', 'I': 'И', 'i': 'и', 'J': 'Й', 'j': 'й', 'K': 'К', 'k': 'к', 'L': 'Л', 'l': 'л',
         'M': 'М', 'm': 'м', 'N': 'Н', 'n': 'н', 'O': 'О', 'o': 'о', 'P': 'П', 'p': 'п', 'Q': 'К', 'q': 'к', 'R': 'Р', 'r': 'р',
         'S': 'С', 's': 'с', 'T': 'Т', 't': 'т', 'U': 'У', 'u': 'у', 'V': 'В', 'v': 'в', 'W': 'В', 'w': 'в', 'X': 'КС', 'x': 'кс',
-        'Y': 'Ы', 'y': 'ы', 'Z': 'З', 'z': 'з'
+        'Y': 'Ы', 'y': 'ы', 'Z': 'З', 'z': 'з',
+
     };
 
+    const englishToHebrew = {
+        'a': 'א', 'b': 'ב', 'c': 'כ', 'd': 'ד', 'e': 'ע', 'f': 'פ', 'g': 'ג', 'h': 'ה',
+        'i': 'י', 'j': 'ג׳', 'k': 'ק', 'l': 'ל', 'm': 'מ', 'n': 'נ', 'o': 'ו',
+        'p': 'פ', 'q': 'ק', 'r': 'ר', 's': 'ס', 't': 'ת', 'u': 'ו', 'v': 'ו', 'w': 'ו', 'x': 'כס',
+        'y': 'י', 'z': 'ז', 'A': 'א', 'B': 'ב', 'C': 'כ', 'D': 'ד', 'E': 'ע', 'F': 'פ', 'G': 'ג', 'H': 'ה',
+        'I': 'י', 'J': 'ג׳', 'K': 'ק', 'L': 'ל', 'M': 'מ', 'N': 'נ', 'O': 'ו', 'P': 'פ', 'Q': 'ק',
+        'R': 'ר', 'S': 'ס', 'T': 'ת', 'U': 'ו', 'V': 'ו', 'W': 'ו', 'X': 'כס', 'Y': 'י', 'Z': 'ז'
+    };
+
+
+    let currentMapping = englishToRussian;
+
     const buttonContainer = document.getElementById('letterButtons');
+    const toggleLanguageButton = document.getElementById('toggleLanguageButton');
 
-    for (const letter in englishToRussian) {
-        if (letter === letter.toLowerCase()) { // Only process lowercase letters to avoid duplicate buttons
-            const upperLetter = letter.toUpperCase();
-            const button = document.createElement('button');
-            button.innerText = `${upperLetter}/${letter} -> ${englishToRussian[upperLetter]}/${englishToRussian[letter]}`;
-            button.className = 'btn letter-button'; // Add Bootstrap button class and custom class
+    const createButtons = (mapping) => {
+        buttonContainer.innerHTML = ''; // Clear existing buttons
 
-            // Add a toggle property to track the state of the button
-            button.toggle = false;
+        for (const letter in mapping) {
+            if (letter === letter.toLowerCase()) { // Only process lowercase letters to avoid duplicate buttons
+                const upperLetter = letter.toUpperCase();
+                const button = document.createElement('button');
+                button.innerText = `${upperLetter}/${letter} -> ${mapping[upperLetter]}/${mapping[letter]}`;
+                button.className = 'btn letter-button'; // Add Bootstrap button class and custom class
 
-            button.addEventListener('click', () => {
-                const input = document.getElementById('textInput');
-                const upperRegex = new RegExp(button.toggle ? englishToRussian[upperLetter] : upperLetter, 'g');
-                const lowerRegex = new RegExp(button.toggle ? englishToRussian[letter] : letter, 'g');
-                input.value = input.value.replace(upperRegex, button.toggle ? upperLetter : englishToRussian[upperLetter]);
-                input.value = input.value.replace(lowerRegex, button.toggle ? letter : englishToRussian[letter]);
+                // Add a toggle property to track the state of the button
+                button.toggle = false;
 
-                // Toggle the button state after each click
-                button.toggle = !button.toggle;
+                button.addEventListener('click', () => {
+                    const input = document.getElementById('textInput');
+                    const upperRegex = new RegExp(button.toggle ? mapping[upperLetter] : upperLetter, 'g');
+                    const lowerRegex = new RegExp(button.toggle ? mapping[letter] : letter, 'g');
+                    input.value = input.value.replace(upperRegex, button.toggle ? upperLetter : mapping[upperLetter]);
+                    input.value = input.value.replace(lowerRegex, button.toggle ? letter : mapping[letter]);
 
-                // Change button color when it's in the Russian letter state
-                if (button.toggle) {
-                    button.classList.add('russian');
-                } else {
-                    button.classList.remove('russian');
-                }
-            });
-            buttonContainer.appendChild(button);
+                    // Toggle the button state after each click
+                    button.toggle = !button.toggle;
+
+                    // Change button color when it's in the Russian letter state
+                    if (button.toggle) {
+                        button.classList.add('russian');
+                    } else {
+                        button.classList.remove('russian');
+                    }
+                });
+                buttonContainer.appendChild(button);
+            }
         }
-    }
+    };
 
+    createButtons(currentMapping);
+    toggleLanguageButton.addEventListener('click', () => {
+        if (currentMapping === englishToRussian) {
+            currentMapping = englishToHebrew;
+            toggleLanguageButton.innerText = 'Toggle Language: Russian';
+        } else {
+            currentMapping = englishToRussian;
+            toggleLanguageButton.innerText = 'Toggle Language: Hebrew';
+        }
+        createButtons(currentMapping);
+    });
     async function getRandomWikipediaText() {
         const url = 'https://en.wikipedia.org/api/rest_v1/page/random/summary';
         try {
