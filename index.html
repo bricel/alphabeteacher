@@ -10,17 +10,16 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">English to Russian Letter Converter</h1>
+        <div class="col-md-12 text-center">
+            <button id="randomTextButton" class="btn btn-primary mb-3">Get New Random Text</button>
+        </div>
         <div class="row">
             <div class="col-md-12">
-                <textarea id="textInput" placeholder="Enter your text here" rows="4" class="form-control mb-3"></textarea>
-            </div>
-            <div class="col-md-12 text-center">
-                <button id="randomTextButton" class="btn btn-primary mb-3">Get New Random Text</button>
+                <textarea id="textInput" placeholder="Enter your text here" rows="20" cols="80" class="form-control mb-3"></textarea>
             </div>
             <div id="letterButtons" class="col-md-12 d-flex flex-wrap justify-content-center"></div>
         </div>
     </div>
-
 
 <script>
     const englishToRussian = {
