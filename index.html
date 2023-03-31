@@ -7,20 +7,52 @@
     <!-- Add Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3HV5HzF6Gvk/e3s3SS+8x6Fp5y3lSk" crossorigin="anonymous">
 </head>
-<body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">English to Russian Letter Converter</h1>
+<style>
+    body {
+        background-color: #f0f2f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    h1 {
+        color: #1d2124;
+    }
+    textarea {
+        resize: none;
+    }
+    button {
+        margin: 0 5px 5px 0;
+    }
+    .letter-button {
+        background-color: #007bff;
+        color: #ffffff;
+        border-color: #007bff;
+    }
+    .letter-button.russian {
+        background-color: #ffc107;
+        color: #212529;
+        border-color: #ffc107;
+    }
+    #randomTextButton {
+        background-color: #007bff;
+    }
+    #randomTextButton:hover {
+        background-color: #ffc107;
+    }
+</style>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">English to Russian Letter Converter</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <textarea id="textInput" placeholder="Enter your text here" rows="20" cols="80" class="form-control mb-3"></textarea>
+        </div>
         <div class="col-md-12 text-center">
             <button id="randomTextButton" class="btn btn-primary mb-3">Get New Random Text</button>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <textarea id="textInput" placeholder="Enter your text here" rows="20" cols="80" class="form-control mb-3"></textarea>
-            </div>
-            <div id="letterButtons" class="col-md-12 d-flex flex-wrap justify-content-center"></div>
-        </div>
+        <div id="letterButtons" class="col-md-12 d-flex flex-wrap justify-content-center"></div>
     </div>
-
+</div>
+<!-- Add Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybB3S3uJd7+xrnz0D4tF3ocvn8OyL/7z0pKfo8k7vD8RJqQ2+" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-rbsA6n8h6B4re4FzLp4OUWn7iCwD97/qqhEAB14D8L/ye7M2mmlxID1tFQmKfn5W" crossorigin="anonymous"></script>
 <script>
     const englishToRussian = {
         'A': 'А', 'a': 'а', 'B': 'Б', 'b': 'б', 'C': 'С', 'c': 'с', 'D': 'Д', 'd': 'д', 'E': 'Е', 'e': 'е', 'F': 'Ф', 'f': 'ф',
@@ -37,6 +69,7 @@
             const upperLetter = letter.toUpperCase();
             const button = document.createElement('button');
             button.innerText = `${upperLetter}/${letter} -> ${englishToRussian[upperLetter]}/${englishToRussian[letter]}`;
+            button.className = 'btn letter-button'; // Add Bootstrap button class and custom class
 
             // Add a toggle property to track the state of the button
             button.toggle = false;
@@ -50,6 +83,13 @@
 
                 // Toggle the button state after each click
                 button.toggle = !button.toggle;
+
+                // Change button color when it's in the Russian letter state
+                if (button.toggle) {
+                    button.classList.add('russian');
+                } else {
+                    button.classList.remove('russian');
+                }
             });
             buttonContainer.appendChild(button);
         }
